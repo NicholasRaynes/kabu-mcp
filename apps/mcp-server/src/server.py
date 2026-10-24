@@ -1,8 +1,5 @@
-"""Kabu MCP server entrypoint.
-
-  * stdio (default):  python src/server.py
-  * streamable HTTP:  python src/server.py --transport streamable-http
-  * MCP inspector:    mcp dev src/server.py
+"""
+Kabu MCP server entrypoint.
 """
 
 import argparse
