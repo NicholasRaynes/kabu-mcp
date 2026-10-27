@@ -1,0 +1,3 @@
+[MAIN]
+# The MCP server runs from apps/mcp-server/src, so `tools` is a top-level package at runtime.
+init-hook='import os, sys; sys.path.insert(0, os.path.join(os.getcwd(), "apps", "mcp-server", "src"))'
