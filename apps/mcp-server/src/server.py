@@ -6,13 +6,17 @@ import argparse
 
 from fastmcp import FastMCP
 
+from tools.news import search_news
+
 mcp = FastMCP("Kabu MCP")
+mcp.add_tool(search_news)
 
 
 def main() -> None:
+    """Run over stdio (local clients) or streamable HTTP (Docker/deployed)."""
     parser = argparse.ArgumentParser(description="Kabu MCP server")
     parser.add_argument("--transport", choices=["stdio", "streamable-http"], default="stdio")
-    parser.add_argument("--host", default="0.0.0.0")
+    parser.add_argument("--host", default="127.0.0.1", help="HTTP bind address (use 0.0.0.0 in containers)")
     parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()
 
