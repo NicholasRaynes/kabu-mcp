@@ -8,4 +8,4 @@ COPY src ./src
 RUN useradd --create-home app
 USER app
 EXPOSE 8000
-CMD ["python", "src/server.py", "--transport", "streamable-http", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "src.server", "--transport", "streamable-http", "--host", "0.0.0.0", "--port", "8000"]
