@@ -6,9 +6,21 @@ import argparse
 
 from fastmcp import FastMCP
 
-from tools.news import search_news
+from src.middleware import JapaneseEquityValidationMiddleware
+from src.tools.news import search_news
 
-mcp = FastMCP("Kabu MCP")
+mcp = FastMCP(
+    "Kabu MCP",
+    instructions=(
+        "Tools accept Japanese listed equity company names or Japanese stock tickers only. "
+        "Use a more specific name or ticker if a company name is ambiguous."
+    ),
+)
+mcp.add_middleware(
+    JapaneseEquityValidationMiddleware(
+        tool_argument_map={"search_news": "query"},
+    )
+)
 mcp.add_tool(search_news)
 
 
