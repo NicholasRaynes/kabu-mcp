@@ -7,6 +7,7 @@ import argparse
 from fastmcp import FastMCP
 
 from src.middleware import JapaneseEquityValidationMiddleware
+from src.tools.company_profile import get_company_profile
 from src.tools.news import search_news
 
 mcp = FastMCP(
@@ -18,10 +19,14 @@ mcp = FastMCP(
 )
 mcp.add_middleware(
     JapaneseEquityValidationMiddleware(
-        tool_argument_map={"search_news": "query"},
+        tool_argument_map={
+            "search_news": "query",
+            "get_company_profile": "query",
+        },
     )
 )
 mcp.add_tool(search_news)
+mcp.add_tool(get_company_profile)
 
 
 def main() -> None:
