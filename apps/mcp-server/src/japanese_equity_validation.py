@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 import unicodedata
 from dataclasses import dataclass
+from typing import Any
 
 import yfinance as yf
 
@@ -24,6 +25,7 @@ class EquityValidationUnavailable(RuntimeError):
 class JapaneseEquity:
     symbol: str
     name: str
+    info: dict[str, Any]
 
 
 def _normalize(value: str) -> str:
@@ -39,6 +41,7 @@ def _verified_equity(symbol: str) -> JapaneseEquity:
     return JapaneseEquity(
         symbol=symbol,
         name=str(info.get("longName") or info.get("shortName") or symbol),
+        info=info,
     )
 
 
