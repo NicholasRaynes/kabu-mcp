@@ -10,6 +10,8 @@ from fastmcp.tools import tool
 from mcp.types import ToolAnnotations
 from pydantic import Field
 
+from src.tools.common import JapaneseEquityIdentifier
+
 
 def _publish_time(item: dict[str, Any]) -> str | None:
     ts = item.get("providerPublishTime")
@@ -47,10 +49,7 @@ def _fetch_news(query: str, limit: int, headline_only: bool) -> list[dict[str, A
     timeout=30.0,
 )
 def search_news(
-    query: Annotated[
-        str,
-        Field(description="Company name or Japan stock ticker, e.g. 'Toyota' or '7203'.", min_length=1),
-    ],
+    query: JapaneseEquityIdentifier,
     limit: Annotated[int, Field(description="Maximum number of articles to return.", ge=1, le=10)] = 10,
     headline_only: Annotated[
         bool,
