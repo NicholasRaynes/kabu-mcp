@@ -49,6 +49,9 @@ class JapaneseEquityValidationMiddleware(Middleware):
             raise ToolError("Japanese equity lookup is temporarily unavailable.") from exc
 
         if ctx := context.fastmcp_context:
-            ctx.set_state("japanese_equity", {"symbol": equity.symbol, "name": equity.name})
+            await ctx.set_state(
+                "japanese_equity",
+                {"symbol": equity.symbol, "name": equity.name, "info": equity.info},
+            )
 
         return await call_next(context)
