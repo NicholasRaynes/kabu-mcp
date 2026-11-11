@@ -9,9 +9,10 @@
 ```
 kabu-mcp/
 ├── apps/
+│   ├── auth-web/              # Vite + React sign-in and OAuth consent pages
 │   └── mcp-server/            # Python FastMCP backend + Dockerfile
 │       ├── src/
-│       │   ├── server.py      # FastMCP entrypoint (stdio / streamable HTTP)
+│       │   ├── server.py      # FastMCP entrypoint (streamable HTTP only)
 │       │   └── tools/         # Tools (to be defined)
 │       └── requirements.txt
 ├── docker-compose.yml
@@ -19,9 +20,15 @@ kabu-mcp/
 └── README.md
 ```
 
+## Authentication
+
+Over HTTP the server requires a Supabase-issued OAuth token. Supabase's OAuth Server acts as the authorization server (email/password accounts); `apps/auth-web` hosts the login and consent pages. MCP clients discover this automatically and open a browser window to sign in.
+
+Setup: create a `.env` in the repo root (untracked) with `SUPABASE_PROJECT_URL`, `SUPABASE_JWT_ALGORITHM`, `BASE_URL`, `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. There are no fallback values. In Supabase, enable the OAuth Server with Authorization Path `/oauth/consent`, Site URL set to the auth web app origin, and dynamic OAuth apps allowed.
+
 ## Deploy with Docker
 
-Build and run the server from the repo root (requires Docker):
+Build and run the server and auth web app from the repo root (requires Docker and a populated `.env`):
 
 ```bash
 git clone https://github.com/<your-org>/kabu-mcp.git
@@ -30,6 +37,7 @@ docker compose up --build -d
 ```
 
 MCP server (streamable HTTP): http://localhost:8000/mcp
+Auth web app: http://localhost:3000
 
 Stop with `docker compose down`.
 
