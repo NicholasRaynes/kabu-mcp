@@ -4,9 +4,3 @@ services:
     ports:
       - "8000:8000"
     restart: unless-stopped
-
-  web:
-    build: ./apps/web
-    ports:
-      - "3000:3000"
-    restart: unless-stopped

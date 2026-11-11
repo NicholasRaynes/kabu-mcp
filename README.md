@@ -9,7 +9,6 @@
 ```
 kabu-mcp/
 ├── apps/
-│   ├── web/                   # Next.js site (placeholder) + Dockerfile
 │   └── mcp-server/            # Python FastMCP backend + Dockerfile
 │       ├── src/
 │       │   ├── server.py      # FastMCP entrypoint (stdio / streamable HTTP)
@@ -22,7 +21,7 @@ kabu-mcp/
 
 ## Deploy with Docker
 
-Build and run both services from the repo root (requires Docker):
+Build and run the server from the repo root (requires Docker):
 
 ```bash
 git clone https://github.com/<your-org>/kabu-mcp.git
@@ -30,10 +29,9 @@ cd kabu-mcp
 docker compose up --build -d
 ```
 
-- Website: http://localhost:3000
-- MCP server (streamable HTTP): http://localhost:8000/mcp
+MCP server (streamable HTTP): http://localhost:8000/mcp
 
-Stop with `docker compose down`. To run a single service: `docker compose up --build mcp-server`.
+Stop with `docker compose down`.
 
 ## Connect to Claude Desktop
 
