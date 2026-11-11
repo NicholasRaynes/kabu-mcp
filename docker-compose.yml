@@ -1,6 +1,13 @@
 services:
   mcp-server:
+    container_name: kabu-mcp-server
     build: ./apps/mcp-server
     ports:
       - "8000:8000"
     restart: unless-stopped
+    networks:
+      - kabu-mcp-network
+
+networks:
+  kabu-mcp-network:
+    name: kabu-mcp-network
