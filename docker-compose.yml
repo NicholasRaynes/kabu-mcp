@@ -4,6 +4,23 @@ services:
     build: ./apps/mcp-server
     ports:
       - "8000:8000"
+    environment:
+      SUPABASE_PROJECT_URL: ${SUPABASE_PROJECT_URL:?set SUPABASE_PROJECT_URL in .env}
+      SUPABASE_JWT_ALGORITHM: ${SUPABASE_JWT_ALGORITHM:?set SUPABASE_JWT_ALGORITHM in .env}
+      BASE_URL: ${BASE_URL:?set BASE_URL in .env}
+    restart: unless-stopped
+    networks:
+      - kabu-mcp-network
+
+  auth-web:
+    container_name: kabu-auth-web
+    build:
+      context: ./apps/auth-web
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:?set VITE_SUPABASE_URL in .env}
+        VITE_SUPABASE_PUBLISHABLE_KEY: ${VITE_SUPABASE_PUBLISHABLE_KEY:?set VITE_SUPABASE_PUBLISHABLE_KEY in .env}
+    ports:
+      - "3000:80"
     restart: unless-stopped
     networks:
       - kabu-mcp-network
