@@ -1,6 +1,12 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
+import { AuthCard } from "@/components/AuthCard";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { safeRedirectPath, supabase } from "./supabase";
 
 export function Login() {
@@ -53,41 +59,75 @@ export function Login() {
     }
   }
 
-  return (
-    <main className="card">
-      <h1>Kabu MCP</h1>
-      <p className="muted">{mode === "signin" ? "Sign in to continue" : "Create your account"}</p>
+  const signin = mode === "signin";
 
+  return (
+    <AuthCard
+      title={signin ? "Welcome!" : "Create your account"}
+      description={
+        signin
+          ? "Sign in to connect Kabu MCP to your AI assistant."
+          : "Sign up to connect Kabu MCP to your AI assistant."
+      }
+      footer={
+        <span>
+          {signin ? "Don't have an account?" : "Already have an account?"}{" "}
+          <Button
+            type="button"
+            variant="link"
+            className="h-auto p-0"
+            onClick={() => setMode(signin ? "signup" : "signin")}
+          >
+            {signin ? "Sign up" : "Sign in"}
+          </Button>
+        </span>
+      }
+    >
       <form onSubmit={onSubmit}>
-        <label>
-          Email
-          <input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        </label>
-        <label>
-          Password
-          <input
-            type="password"
-            required
-            minLength={8}
-            autoComplete={mode === "signin" ? "current-password" : "new-password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <button type="submit" disabled={busy}>
-          {mode === "signin" ? "Sign in" : "Sign up"}
-        </button>
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <Input
+              id="email"
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <Input
+              id="password"
+              type="password"
+              required
+              minLength={8}
+              autoComplete={signin ? "current-password" : "new-password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Field>
+          <Field>
+            <Button type="submit" disabled={busy} className="w-full">
+              {busy && <Spinner />}
+              {signin ? "Sign in" : "Sign up"}
+            </Button>
+          </Field>
+        </FieldGroup>
       </form>
 
-      {error && <p className="error">{error}</p>}
-      {notice && <p className="notice">{notice}</p>}
-
-      <p className="muted">
-        {mode === "signin" ? "No account?" : "Already have an account?"}{" "}
-        <button type="button" className="link" onClick={() => setMode(mode === "signin" ? "signup" : "signin")}>
-          {mode === "signin" ? "Sign up" : "Sign in"}
-        </button>
-      </p>
-    </main>
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription className="text-destructive">{error}</AlertDescription>
+        </Alert>
+      )}
+      {notice && (
+        <Alert>
+          <AlertDescription>{notice}</AlertDescription>
+        </Alert>
+      )}
+    </AuthCard>
   );
 }
