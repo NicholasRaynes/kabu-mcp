@@ -1,6 +1,12 @@
+import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
+import { AuthCard } from "@/components/AuthCard";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Spinner } from "@/components/ui/spinner";
 import { supabase } from "./supabase";
 
 interface ConsentDetails {
@@ -71,53 +77,70 @@ export function Consent() {
 
   if (error) {
     return (
-      <main className="card">
-        <h1>Authorization error</h1>
-        <p className="error">{error}</p>
-      </main>
+      <AuthCard title="Authorization error">
+        <Alert variant="destructive">
+          <AlertDescription className="text-destructive">{error}</AlertDescription>
+        </Alert>
+      </AuthCard>
     );
   }
   if (!details) {
     return (
-      <main className="card">
-        <p className="muted">Loading...</p>
-      </main>
+      <AuthCard>
+        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+          <Spinner />
+          Loading...
+        </div>
+      </AuthCard>
     );
   }
 
   const scopes = (details.scope ?? "").split(" ").filter(Boolean);
 
   return (
-    <main className="card">
-      <h1>Authorize {details.client.name}</h1>
-      <p className="muted">This application wants to access Kabu MCP on your behalf.</p>
-      <p>
-        <strong>Redirects to:</strong> <code>{details.redirect_uri}</code>
-      </p>
+    <AuthCard
+      title={`Authorize ${details.client.name}`}
+      description="This application wants to access Kabu MCP on your behalf."
+      footer={
+        <span>
+          Wrong account?{" "}
+          <Button type="button" variant="link" className="h-auto p-0" onClick={switchAccount}>
+            Sign out
+          </Button>
+        </span>
+      }
+    >
+      <div className="grid gap-1 text-sm">
+        <span className="text-xs font-medium text-muted-foreground">Redirects to</span>
+        <code className="break-all text-xs">{details.redirect_uri}</code>
+      </div>
+
       {scopes.length > 0 && (
         <>
-          <strong>Requested permissions:</strong>
-          <ul>
-            {scopes.map((s) => (
-              <li key={s}>{s}</li>
-            ))}
-          </ul>
+          <Separator />
+          <div className="grid gap-3 text-sm">
+            <span className="font-medium">Requested permissions</span>
+            <ul className="grid gap-2">
+              {scopes.map((s) => (
+                <li key={s} className="flex items-center gap-2 text-muted-foreground">
+                  <Check className="size-4 text-foreground" />
+                  {s}
+                </li>
+              ))}
+            </ul>
+          </div>
         </>
       )}
-      <div className="row">
-        <button type="button" disabled={busy} onClick={() => decide(true)}>
-          Approve
-        </button>
-        <button type="button" className="secondary" disabled={busy} onClick={() => decide(false)}>
+
+      <div className="grid grid-cols-2 gap-3">
+        <Button type="button" variant="outline" disabled={busy} onClick={() => decide(false)}>
           Deny
-        </button>
+        </Button>
+        <Button type="button" disabled={busy} onClick={() => decide(true)}>
+          {busy && <Spinner />}
+          Approve
+        </Button>
       </div>
-      <p className="muted">
-        Wrong account?{" "}
-        <button type="button" className="link" onClick={switchAccount}>
-          Sign out
-        </button>
-      </p>
-    </main>
+    </AuthCard>
   );
 }
